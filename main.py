@@ -37,6 +37,7 @@ application = LoggingWSGIApplication([
         ('/user/(.+)', home.UserHome),
         ('/favicon.ico', home.Favicon),
         ('/bookmarklet', home.Bookmarklet),
+        ('/dailypushreport', push.DailyPushReport),
         ('/', home.Root),
         ('.*', home.NotFound),
         ], debug=config.debug)

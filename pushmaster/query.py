@@ -44,6 +44,11 @@ def open_pushes():
         memcache.add(OPEN_PUSHES_CACHE_KEY, open_pushes, 60 * 60)
     return open_pushes
 
+def live_pushes_today():
+    yesterday = datetime.datetime.utcnow() - datetime.timedelta(days=1)
+    live_pushes = model.Push.all().filter('state =', 'live').filter('ltime >=', yesterday).order('ltime')
+    return live_pushes
+
 def pushes_for_user(user, limit=25):
     states = ('accepting', 'onstage', 'live')
     pushes = model.Push.all().filter('owner =', user).filter('state in', states).order('-mtime').fetch(limit)

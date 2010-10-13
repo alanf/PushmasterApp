@@ -101,11 +101,16 @@ request_flags_badge_map = (
 def request_badges(request):
     return [badge(request) for flag, badge in request_flags_badge_map if getattr(request, flag)]
 
-def request_item(request):
+def request_item(request, full_request=False):
     li = T.li(class_='request clearfix')(
         display_date(request.target_date),
         T.span(class_='email')(T.a(href=urls.user_home(request.owner))(logic.user_info(request.owner).full_name), ':'),
         T.a(href=request.uri, class_='request-subject')(request.subject),
+        )
+    if full_request:
+        li.children += (
+            T.a(request.branch, href=config.git_branch_url % dict(branch=request.branch)),
+            T.p(class_='content')(request.message),
         )
 
     if request.target_date > util.tznow().date():

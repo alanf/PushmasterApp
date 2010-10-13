@@ -56,6 +56,14 @@ def send_request_mail(request):
         subject='%s: %s' % (request.owner.nickname(), request.subject),
         body='\n'.join(body))
 
+def send_daily_push_report_mail():
+    body = "This is a test body"
+    util.send_mail(
+        #to=[request.owner.email(), config.mail_to, config.mail_request],
+        to=['alan@yelp.com'],
+        subject='test subject',
+        body='\n'.join(body))
+
 def abandon_request(request):
     assert request.state in ('requested', 'accepted', 'rejected')
     request.state = 'abandoned'

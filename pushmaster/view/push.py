@@ -30,6 +30,19 @@ def push_item(push):
         T.ol(map(common.request_item, requests)) if requests else T.div('No requests.'),
     )
 
+def push_item_full(push):
+    requests = query.push_requests(push)
+    return T.li(class_='push')(
+        T.div(
+            common.display_datetime(push.ptime),
+            T.a(href=push.uri)(push.name or 'push'),
+            common.user_home_link(push.owner, logic.user_info(push.owner)),
+            T.span(class_='state')(common.display_push_state(push)),
+            class_='headline',
+            ),
+        T.ol(map(lambda item: common.request_item(item, full_request=True), requests)) if requests else T.div('No requests.'),
+    )
+
 class Pushes(RequestHandler):
     def get(self):
         doc = common.Document(title='pushmaster: recent pushes')
@@ -49,6 +62,16 @@ class Pushes(RequestHandler):
         else:
             raise HTTPStatusCode(httplib.BAD_REQUEST)
 
+class DailyPushReport(RequestHandler):
+    def get(self):
+        doc = common.Document(title='pushmaster: today\'s pushes')
+        
+        pushes = query.live_pushes_today()
+        
+        doc.body(T.h1('Today\'s Pushes'), T.ol(map(push_item_full, pushes)))
+        doc.serialize(self.response.out)
+        logic.send_daily_push_report_mail()
+        
 def accepted_list(accepted, request_item=common.request_item, state=''):
     return T.ol(class_=' '.join(['requests', state]))(map(request_item, accepted))
 

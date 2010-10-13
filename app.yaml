@@ -24,6 +24,10 @@ handlers:
   script: pushmaster/tasks.py
   login: admin
 
+- url: /dailypushreport
+  script: main.py
+  login: admin
+
 - url: /_ah/mail/.+ 
   script: pushmaster/mail.py
   login: admin
