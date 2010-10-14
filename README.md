@@ -1,4 +1,4 @@
-An application for pushmasters.
+An application for pushmasters!
 
 
 Note: To set up the configuration params that are kept in the datastore
