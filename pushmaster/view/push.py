@@ -1,6 +1,7 @@
 import datetime
 import httplib
 import logging
+import tempfile
 
 from django.utils import simplejson as json
 from google.appengine.api import users
@@ -63,15 +64,22 @@ class Pushes(RequestHandler):
             raise HTTPStatusCode(httplib.BAD_REQUEST)
 
 class DailyPushReport(RequestHandler):
+    def dispatch_daily_push_report_email(self, doc):
+        tmp_file = tempfile.TemporaryFile()
+        doc.serialize(tmp_file)
+        tmp_file.seek(0)
+        email_body = tmp_file.readlines()
+        logic.send_daily_push_report_mail(email_body)
+        
     def get(self):
-        doc = common.Document(title='pushmaster: today\'s pushes')
+        doc = common.Document(title="pushmaster: today's pushes")
         
         pushes = query.live_pushes_today()
         
-        doc.body(T.h1('Today\'s Pushes'), T.ol(map(push_item_full, pushes)))
+        doc.body(T.h1("Today's Pushes"), T.ol(map(push_item_full, pushes)))
+        self.dispatch_daily_push_report_email(doc)
         doc.serialize(self.response.out)
-        logic.send_daily_push_report_mail()
-        
+
 def accepted_list(accepted, request_item=common.request_item, state=''):
     return T.ol(class_=' '.join(['requests', state]))(map(request_item, accepted))
 
