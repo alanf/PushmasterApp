@@ -108,7 +108,7 @@ def request_item(request, full_request=False):
         T.a(href=request.uri, class_='request-subject')(request.subject),
         )
     if full_request:
-        li.children += (
+        li(
             T.a(request.branch, href=config.git_branch_url % dict(branch=request.branch)),
             T.p(class_='content')(request.message),
         )

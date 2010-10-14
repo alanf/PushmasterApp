@@ -1,4 +1,4 @@
 - description: nightly report of all the pushes for a 24 hour period 
- url: /mail/weekly
+ url: /dailypushreport
  schedule: every day 22:30
  timezone: America/Los_Angeles
